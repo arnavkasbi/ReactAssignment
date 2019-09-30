@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import FormInput from '../Component/FormInput';
 import Note from '../Component/Note';
 import '../styles/css/Notepage.css';
 import {bindActionCreators} from 'redux';
@@ -13,10 +14,15 @@ class Notepage extends Component{
       noteHeading: "",
       noteData: "",
       enablePost:false,
-      updateIndex : null
+      enableEdit: true,
+      updateIndex : null,
+      inputFields : [
+        { class: "row", title: "Title", type:"text", id:"noteHeading", name:"noteHeading", placeholder: "Enter Title", value:"", handleChange: this.handleChange },
+        { class: "row", title: "Content", type:"text", id:"noteData", name:"noteData", placeholder: "Enter Content", value:"", handleChange: this.handleChange }   
+      ]
     };
+    
   }
-
 
   handleChange = (e) => {
     let target = "";
@@ -26,9 +32,17 @@ class Notepage extends Component{
       } else {
         target = "noteData";
       }
-      if(this.state[target] !== e.target.value){
-        this.setState({ [target] : e.target.value });
-      }
+      //if(this.state[target] !== e.target.value){
+        let updateFieldArr = [...this.state.inputFields];
+        updateFieldArr.forEach((val)=>{
+          if(val.id===e.target.id)
+            val.value = e.target.value;
+        });
+        this.setState({ 
+          [target] : e.target.value, 
+          inputFields : updateFieldArr
+        });
+      //}
     } catch (e) {
       console.log(e);
     }
@@ -53,26 +67,40 @@ class Notepage extends Component{
 
   savePost = (e) =>{
     e.preventDefault();
+    this.setState({ enableEdit : true });
     let isValid = this.validateForm();
     if(isValid){
       
       let stateCopy = {...this.state};
-
+      let inputFieldArr = [...this.state.inputFields].map(val=>{
+        val.value = "";
+        return val;
+      });
       if(stateCopy.updateIndex !== null){
         let noteListCopy = [...this.props.noteList];
         noteListCopy[stateCopy.updateIndex] = {header : stateCopy.noteHeading, content: stateCopy.noteData};
         this.props.updateNote(noteListCopy);
-        this.setState({ updateIndex:null, enablePost : false , noteHeading : "" , noteData : "" });
+        this.setState({ updateIndex:null, enablePost : false , noteHeading : "", noteData : "", inputFields:inputFieldArr });
       } else {
         this.props.saveNote({header : stateCopy.noteHeading, content: stateCopy.noteData});
-        this.setState({  enablePost : false , noteHeading : "" , noteData : "" });
+        this.setState({  enablePost : false , noteHeading : "" , noteData : "", inputFields:inputFieldArr });
       }
      
     }
   };
 
   editPost = (index) => {
-    this.setState({ updateIndex:index, enablePost : true, noteHeading : this.props.noteList[index].header, noteData : this.props.noteList[index].content })
+    let inputFieldArr = [...this.state.inputFields];
+    inputFieldArr[0].value = this.props.noteList[index].header;
+    inputFieldArr[1].value = this.props.noteList[index].content;
+    this.setState({ 
+      updateIndex:index, 
+      enableEdit: false, 
+      enablePost : true, 
+      noteHeading : this.props.noteList[index].header, 
+      noteData : this.props.noteList[index].content,
+      inputFields: inputFieldArr 
+    })
   }
 
   deletePost = (index) => {
@@ -92,11 +120,13 @@ class Notepage extends Component{
         </div>        
         <div id="viewport" className="row" style = {{width : "90%"}}>
         {/* Sidebar */}
-          <div id="sidebar" className="col-md-5">
+          <div id="sidebar" className="col-md-5" >
             <Note 
               noteList = {this.props.noteList} 
               updatePost={this.editPost} 
-              deletePost={this.deletePost}>
+              deletePost={this.deletePost}
+              enableEdit={this.state.enableEdit}
+              >
             </Note>
           </div>
           {/*Content*/ } 
@@ -107,22 +137,12 @@ class Notepage extends Component{
             {this.state.enablePost ? 
             <div style={{marginTop : "20px"}}>
               <form>
-                <div className="row">
-                <label>Title</label>
-                <input type="text" id="noteHeading" name="noteHeading" placeholder="Enter the heading" value={this.state.noteHeading} onChange={this.handleChange}/>
-                </div>
-                <div className="row">
-                <label>Body</label>
-                <input type="text" id="noteData" name="noteData" placeholder="Enter the content" value={this.state.noteData} onChange={this.handleChange}/>
-                </div>
-                <button type="submit" value="Save Post" onClick={this.savePost}> Save Post </button>
+                <FormInput inputFields = {this.state.inputFields} savePost={this.savePost}></FormInput>
               </form>
             </div> :
             <div style = {{ visibility : "hidden"}}>
               <form>
-                <input type="text" id="noteHeading" name="noteHeading" placeholder="Enter the heading" value={this.state.noteHeading} onChange={this.handleChange}/>
-                <input type="text" id="noteData" name="noteData" placeholder="Enter the content" value={this.state.noteData} onChange={this.handleChange}/>
-                <input type="submit" value="Save Post" />
+                <FormInput inputFields = {this.state.inputFields} savePost={this.savePost}></FormInput>
               </form>
             </div>}
           </div>

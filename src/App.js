@@ -19,7 +19,7 @@ class App extends Component{
     let currEl = e.target;
     let target = "";
     try {
-      if(currEl.id == "login"){
+      if(currEl.id === "login"){
         target = "username";
       } else {
         target = "password";
@@ -32,7 +32,7 @@ class App extends Component{
       //     }
       //   }
       // })
-      if(this.state[target] != e.target.value){
+      if(this.state[target] !== e.target.value){
         this.setState({ [target] : e.target.value });
       }
     } catch (e) {

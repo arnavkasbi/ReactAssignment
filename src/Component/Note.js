@@ -32,16 +32,18 @@ class Note extends Component{
 
   renderNoteList = () => {
     let noteList = [];
-    this.props.noteList.map((note, index)=>{
+    this.props.noteList.forEach((note, index)=>{
       noteList.push (
         <div key={"note_"+index} style={{ width : "100%"}}>
           <i 
-            className="fa fa-pencil icon" style={{ paddingLeft : "10px" }} 
+            className='fa fa-pencil icon' 
+            style={{ paddingLeft : "10px" }} 
             onClick = {() => this.props.updatePost(index)}
             aria-hidden="true">  
           </i>
           <i 
-            className="fa fa-remove icon" aria-hidden="true" 
+            className={this.props.enableEdit ? 'fa fa-remove icon' :'disable-edit fa fa-remove icon'} 
+            aria-hidden="true" 
             onClick={() => this.props.deletePost(index)}>
           </i>
           
