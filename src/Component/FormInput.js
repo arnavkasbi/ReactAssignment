@@ -17,12 +17,14 @@ const FormInput = function(props){
             name={inputField.name} 
             placeholder={inputField.placeholder} 
             value={inputField.value} 
-            onChange={(e) => inputField.handleChange(e)}/>
+            onChange={(e) => inputField.handleChange(e)}
+            className={inputField.fieldClass}  
+          />
         </div>
       );
     })
     formInputArr.push(
-      <button type="submit" value="Save Post" onClick={props.savePost}> Save Post </button>
+      <button type="submit" value={props.submitBtnValue} onClick={props.onSubmit} className={props.submitBtnClass}> Save Post </button>
     )
     return formInputArr;
   };

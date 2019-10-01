@@ -17,8 +17,8 @@ class Notepage extends Component{
       enableEdit: true,
       updateIndex : null,
       inputFields : [
-        { class: "row", title: "Title", type:"text", id:"noteHeading", name:"noteHeading", placeholder: "Enter Title", value:"", handleChange: this.handleChange },
-        { class: "row", title: "Content", type:"text", id:"noteData", name:"noteData", placeholder: "Enter Content", value:"", handleChange: this.handleChange }   
+        { fieldClass:"", class: "row", title: "Title", type:"text", id:"noteHeading", name:"noteHeading", placeholder: "Enter Title", value:"", handleChange: this.handleChange },
+        { fieldClass:"", class: "row", title: "Content", type:"text", id:"noteData", name:"noteData", placeholder: "Enter Content", value:"", handleChange: this.handleChange }   
       ]
     };
     
@@ -137,7 +137,12 @@ class Notepage extends Component{
             {this.state.enablePost ? 
             <div style={{marginTop : "20px"}}>
               <form>
-                <FormInput inputFields = {this.state.inputFields} savePost={this.savePost}></FormInput>
+                <FormInput 
+                  inputFields = {this.state.inputFields} 
+                  onSubmit={this.savePost} 
+                  submitBtnValue="Save Post"
+                  submitBtnClass="button"
+                ></FormInput>
               </form>
             </div> :
             <div style = {{ visibility : "hidden"}}>

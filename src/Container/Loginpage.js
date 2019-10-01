@@ -1,9 +1,30 @@
 import React, {Component} from 'react';
+import FormInput from '../Component/FormInput';
 import "../styles/css/App.css";
+
 
 class Loginpage extends Component{
   constructor(props){
     super(props);
+    this.state = {
+      loginDetails : [
+        { class:"", fieldClass: "fadeIn second", title: "Login", type:"text", id:"login", name:"login", placeholder: "", value:"", handleChange: this.props.handleChange },
+        { class:"", fieldClass: "fadeIn third", title: "Password", type:"password", id:"password", name:"password", placeholder: "", value:"", handleChange: this.props.handleChange }   
+      ]
+    };
+  }
+
+  componentDidUpdate(prevProps){
+    if(prevProps.username !== this.props.username){
+      let loginDetails = [...this.state.loginDetails];
+      loginDetails[0].value = this.props.username;
+      this.setState({loginDetails});
+    }
+    if(prevProps.password !== this.props.password){
+      let loginDetails = [...this.state.loginDetails];
+      loginDetails[1].value = this.props.password;
+      this.setState({loginDetails});
+    }
   }
 
   render(){
@@ -12,9 +33,13 @@ class Loginpage extends Component{
         <h1>Login Form</h1>
         <div id="loginForm" className="wrapper fadeInDown">
           <form>
-            <input type="text" id="login" className="fadeIn second" value={this.props.username} name="login" placeholder="login" onChange={this.props.handleChange}/>
-            <input type="password" id="password" className="fadeIn third" value={this.props.password} name="login" placeholder="password" onChange={this.props.handleChange}/>
-            <input type="submit" className="fadeIn fourth" value="Log In" onClick={this.props.handleSubmit} />
+            <FormInput
+              inputFields={this.state.loginDetails} 
+              onSubmit={this.props.handleSubmit} 
+              submitBtnValue="Log In"
+              submitBtnClass="fadeIn fourth"
+            >
+            </FormInput>
           </form>
         </div>
       </div>
